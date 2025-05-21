@@ -19,7 +19,7 @@ class Player:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.image = pygame.image.load('./sprites/player.png').convert_alpha()
+        self.image = pygame.image.load('./images/player.png').convert_alpha()
         self.rect = self.image.get_rect(center=(self.x, self.y))
     
     def draw(self, surface):
@@ -34,6 +34,10 @@ movement = PlayerMovement(player)
 
 # Game clock
 clock = pygame.time.Clock()
+
+# Set the background image
+bgImage = pygame.image.load('./images/bg_texture.png')
+bgRect = bgImage.get_rect(topleft=(0,0))
 
 # Game loop
 running = True
@@ -54,9 +58,10 @@ while running:
     player.y = max(player.rect.height//2, min(HEIGHT - player.rect.height//2, player.y))
     
     # Draw and update
-    screen.fill(WHITE)
+    screen.blit(bgImage, bgRect)
     player.draw(screen)    
     pygame.display.flip()
+
     
     # Cap the frame rate
     clock.tick(60)
