@@ -16,16 +16,18 @@ BLUE = (0, 0, 255)
 
 # Create player (blue circle)
 class Player:
-    def __init__(self, x, y, radius):
+    def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.radius = radius
+        self.image = pygame.image.load('./sprites/player.png').convert_alpha()
+        self.rect = self.image.get_rect(center=(self.x, self.y))
     
     def draw(self, surface):
-        pygame.draw.circle(surface, BLUE, (self.x, self.y), self.radius)
+        self.rect.center = (self.x, self.y)
+        surface.blit(self.image, self.rect)
 
 # Create player instance
-player = Player(WIDTH // 2, HEIGHT // 2, 10)
+player = Player(WIDTH // 2, HEIGHT // 2)
 
 # Initialize player movement
 movement = PlayerMovement(player)
@@ -48,8 +50,8 @@ while running:
     movement.update()
     
     # Keep player within screen bounds
-    player.x = max(player.radius, min(WIDTH - player.radius, player.x))
-    player.y = max(player.radius, min(HEIGHT - player.radius, player.y))
+    player.x = max(player.rect.width//2, min(WIDTH - player.rect.width//2, player.x))
+    player.y = max(player.rect.height//2, min(HEIGHT - player.rect.height//2, player.y))
     
     # Draw and update
     screen.fill(WHITE)
