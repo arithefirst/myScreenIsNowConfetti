@@ -17,6 +17,9 @@ class PlayerMovement:
                 self.movement["left"] = True
             if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                 self.movement["right"] = True
+            # Slower movement for more precise dodging for when things get insane ofc
+            if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
+                self.speed /= 2
                 
         # Handle key release events
         elif event.type == pygame.KEYUP:
@@ -28,6 +31,9 @@ class PlayerMovement:
                 self.movement["left"] = False
             if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                 self.movement["right"] = False
+            # set speed back to normal
+            if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
+                self.speed *= 2
     
     def update(self):
         # Handle vertical movement
