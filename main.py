@@ -1,6 +1,7 @@
 import pygame
 import sys
 from playermove import PlayerMovement
+from super_evil_bad_guy import BillieEilishBadGuy
 
 # Initialize pygame
 pygame.init()
@@ -24,6 +25,7 @@ class Player:
 
 # Create player instance
 player = Player(WIDTH // 2, HEIGHT // 2)
+mischievousMale = BillieEilishBadGuy((600, 400), player)
 
 # Initialize player movement
 movement = PlayerMovement(player)
@@ -55,6 +57,7 @@ while running:
     
     # Update player position
     movement.update()
+    mischievousMale.update()
     
     # Keep player within bounding box
     player.x = max(player.rect.width//2 + bounds.x, min((bounds.width - player.rect.width//2) + bounds.x, player.x))
@@ -64,6 +67,7 @@ while running:
     screen.blit(bgImage, bgRect)
     draw_bound(screen)
     player.draw(screen)    
+    mischievousMale.draw(screen)
     pygame.display.flip()
 
     
