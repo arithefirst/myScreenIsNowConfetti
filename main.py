@@ -62,7 +62,7 @@ while running:
     # Spawn a new enemy every 60 frames
     tilNext -= 1
     if tilNext == 0:
-        enemies.append(BillieEilishBadGuy((600, 400), player))   
+        enemies.append(BillieEilishBadGuy((600, 400)))   
         tilNext = enemySpawnInterval    
 
     # Handle events
