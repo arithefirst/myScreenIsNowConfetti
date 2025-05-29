@@ -17,6 +17,7 @@ def font(size=72):
 
 
 isLose = False
+score = 0
 
 # Array for multiple enemy spawns
 enemies = []
@@ -34,6 +35,7 @@ class Player:
         self.y = y
         self.image = pygame.image.load("./images/player.png").convert_alpha()
         self.rect = self.image.get_rect(center=(self.x, self.y))
+        self.health = 100
 
     def draw(self, surface):
         self.rect.center = (self.x, self.y)
@@ -88,6 +90,7 @@ while running:
                 isLose = True
             if v.determineSelfDestruct():
                 enemies.pop(i)
+                score += 10
 
         # Keep player within screen bounds
         player.x = max(
@@ -102,9 +105,17 @@ while running:
         # Draw and update
         screen.blit(bgImage, bgRect)
         player.draw(screen)
+
+        # Stage
         text = font(32).render(f"Stage {stage}", False, (0, 0, 0))
         textRect = text.get_rect()
         screen.blit(text, textRect)
+
+        # Score
+        scoreText = font(24).render(f"Score: {score:04d}", False, (0,0,0))
+        scoreRect = scoreText.get_rect()
+        scoreRect.top = 36
+        screen.blit(scoreText, scoreRect)
 
         # Draw all enemies
         for i in enemies:
@@ -123,6 +134,7 @@ while running:
                 tilNext = enemySpawnInterval
                 tilNextRamp = 60 * 10
                 stage = 0
+                score = 0
 
         screen.fill((0, 0, 0))
         text = font().render("GAME OVER", False, (255, 0, 0))
