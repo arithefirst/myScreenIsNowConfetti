@@ -11,6 +11,10 @@ WIDTH, HEIGHT = 600, 400
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("MY SCREEN IS NOW CONFETTI!!!!")
 
+# Array for multiple enemy spawns
+enemies = []
+enemySpawnInterval = 60
+tilNext = enemySpawnInterval
 
 # Create player
 class Player:
@@ -27,7 +31,6 @@ class Player:
 
 # Create player instance
 player = Player(WIDTH // 2, HEIGHT // 2)
-mischievousMale = BillieEilishBadGuy((600, 400), player)
 
 # Initialize player movement
 movement = PlayerMovement(player)
@@ -56,6 +59,12 @@ bgRect = bgImage.get_rect(topleft=(0, 0))
 # Game loop
 running = True
 while running:
+    # Spawn a new enemy every 60 frames
+    tilNext -= 1
+    if tilNext == 0:
+        enemies.append(BillieEilishBadGuy((600, 400), player))   
+        tilNext = enemySpawnInterval    
+
     # Handle events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -66,7 +75,12 @@ while running:
 
     # Update player position
     movement.update()
-    mischievousMale.update()
+
+    # Update all enemies
+    for i in enemies:
+        i.update()
+
+    
 
     # Keep player within bounding box
     player.x = max(
@@ -78,11 +92,15 @@ while running:
         min((bounds.height - player.rect.height // 2) + bounds.y, player.y),
     )
 
+
     # Draw and update
     screen.blit(bgImage, bgRect)
     draw_bound(screen)
     player.draw(screen)
-    mischievousMale.draw(screen)
+
+    # Draw all enemies
+    for i in enemies:
+        i.draw(screen)
     pygame.display.flip()
 
     # Cap the frame rate
