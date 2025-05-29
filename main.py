@@ -10,11 +10,15 @@ pygame.init()
 WIDTH, HEIGHT = 600, 400
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("MY SCREEN IS NOW CONFETTI!!!!")
+
+def font(size = 72):
+    return pygame.font.Font('Comic Sans MS.ttf', size)
+
 isLose = False
 
 # Array for multiple enemy spawns
 enemies = []
-enemySpawnInterval = 60
+enemySpawnInterval = 10
 tilNext = enemySpawnInterval
 
 
@@ -95,8 +99,21 @@ while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == pygame.KEYDOWN and event.key == 114:
+                enemies = []
+                player = Player(WIDTH // 2, HEIGHT // 2)
+                movement = PlayerMovement(player)
+                isLose = False
 
-        screen.fill((255, 0, 0))
+        screen.fill((0, 0, 0))
+        text = font().render('GAME OVER', False, (255,0,0))
+        restart = font(32).render('Press "r" to restart', False, (255,0,0))
+        textRect = text.get_rect()
+        restartRect = restart.get_rect()
+        textRect.center = (WIDTH // 2, HEIGHT // 2)
+        restartRect.center = (WIDTH // 2, HEIGHT // 2 + 60)
+        screen.blit(text, textRect)
+        screen.blit(restart, restartRect)
     pygame.display.flip()
 
     # Cap the frame rate
