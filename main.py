@@ -2,6 +2,9 @@ import pygame
 import sys
 from playermove import PlayerMovement
 from super_evil_bad_guy import BillieEilishBadGuy
+from konami import KonamiCodeListener
+import math
+
 
 # Initialize pygame
 pygame.init()
@@ -16,6 +19,7 @@ def font(size=72):
     return pygame.font.Font("Comic Sans MS.ttf", size)
 
 
+invincible = False
 isLose = False
 score = 0
 
@@ -56,6 +60,8 @@ clock = pygame.time.Clock()
 bgImage = pygame.image.load("./images/bg_texture.png")
 bgRect = bgImage.get_rect(topleft=(0, 0))
 
+konamiHandler = KonamiCodeListener()
+
 # Game loop
 running = True
 while running:
@@ -80,6 +86,9 @@ while running:
 
             # Pass events to the movement handler
             movement.handle_event(event)
+            konamiHandler.addKey(event)
+            if konamiHandler.checkCode():
+                invincible = True
 
         # Update player position
         movement.update()
@@ -87,7 +96,7 @@ while running:
         # Update all enemies
         for i, v in enumerate(enemies):
             v.update()
-            if v.checkCollision():
+            if v.checkCollision() and not invincible:
                 enemies.pop(i)
                 player.health -= 20
                 score -= 30
@@ -122,13 +131,30 @@ while running:
         scoreRect.top = 36
         screen.blit(scoreText, scoreRect)
 
+        if invincible:
+            time = pygame.time.get_ticks() / 200.0  # Slow down the color change
+            red = int(127 * (1 + math.sin(time)))
+            green = int(127 * (1 + math.sin(time + 2)))
+            blue = int(127 * (1 + math.sin(time + 4)))
+            rainbow_color = (red, green, blue)
+
+            # Render invincible text
+            invincibleText = font(36).render("INVINCIBLE!", False, rainbow_color)
+            invincibleRect = invincibleText.get_rect()
+            invincibleRect.center = (
+                WIDTH // 2,
+                HEIGHT - 50,
+            )  # Centered, bottom of screen
+            screen.blit(invincibleText, invincibleRect)
+
         # Health
-        healthText = font(24).render(
-            f"Health: {player.health // 20}/3", False, (0, 0, 0)
-        )
-        healthRect = scoreText.get_rect()
-        healthRect.right = 600
-        screen.blit(healthText, healthRect)
+        if not invincible:
+            healthText = font(24).render(
+                f"Health: {player.health // 20}/3", False, (0, 0, 0)
+            )
+            healthRect = scoreText.get_rect()
+            healthRect.right = 600
+            screen.blit(healthText, healthRect)
 
         # Draw all enemies
         for i in enemies:
@@ -139,7 +165,7 @@ while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            elif event.type == pygame.KEYDOWN and event.key == 114:
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 enemies = []
                 player = Player(WIDTH // 2, HEIGHT // 2)
                 movement = PlayerMovement(player)
