@@ -12,7 +12,19 @@ from powerup import PowerUp
 # Initialize pygame
 pygame.init()
 pygame.mixer.init()
-pygame.mixer.music.set_volume(0.7)
+
+pygame.mixer.music.load("earVisuals/good_old_honest_abe.mp3")
+pygame.mixer.music.set_volume(0.05)
+pygame.mixer.music.play(-1)
+
+# Load sound effects as Sound objects
+sound_hit = pygame.mixer.Sound("earVisuals/hurt.wav")
+sound_game_over = pygame.mixer.Sound("earVisuals/wompwompwompwomp.mp3")
+sound_powerup = pygame.mixer.Sound("earVisuals/powerUp.wav")
+
+sound_hit.set_volume(0.4)
+sound_game_over.set_volume(0.2)
+sound_powerup.set_volume(0.4)
 
 # Set up the display
 WIDTH, HEIGHT = 600, 400
@@ -135,14 +147,18 @@ while running:
         controls2 = font(20).render(
             "Collect health power-ups to survive", False, (150, 150, 150)
         )
+        musicCredit = font(16).render(
+            "(Background music: Strawberry Cake by nobonoko)", False, (150, 150, 150)
+        )
 
         # Position text
-        title_rect = title.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 80))
+        title_rect = title.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 90))
         confetti_rect = confetti.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 40))
         subtitle_rect = subtitle.get_rect(center=(WIDTH // 2, HEIGHT // 2))
         start_rect = start_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 50))
         controls1_rect = controls1.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))
         controls2_rect = controls2.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 125))
+        musicCredit_rect = musicCredit.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 175))
 
         # Draw text
         screen.blit(title, title_rect)
@@ -151,6 +167,7 @@ while running:
         screen.blit(start_text, start_rect)
         screen.blit(controls1, controls1_rect)
         screen.blit(controls2, controls2_rect)
+        screen.blit(musicCredit, musicCredit_rect)
 
     elif game_state == GAME_STATE_PLAYING:
         # Spawn a new enemy every 60 frames
@@ -184,15 +201,13 @@ while running:
             if v.checkCollision() and not invincible:
                 if len(enemies) > 0:
                     enemies.pop(i)
-                pygame.mixer.music.load("earVisuals/haoum.mp3")
-                pygame.mixer.music.play()
+                sound_hit.play()  # Play sound effect without stopping music
                 explosion_system.create_explosion(v.x, v.y, v.color)
                 player.health -= 1
                 score -= 25
                 if player.health == 0:
                     game_state = GAME_STATE_GAME_OVER
-                    pygame.mixer.music.load("earVisuals/wompwompwompwomp.mp3")
-                    pygame.mixer.music.play()
+                    sound_game_over.play()  # Play game over sound
             if v.determineSelfDestruct():
                 if len(enemies) > 0:
                     enemies.pop(i)
@@ -202,8 +217,7 @@ while running:
         for i, v in enumerate(powerUps):
             v.update()
             if v.toBeKilled == True and len(powerUps) > 0:
-                pygame.mixer.music.load("earVisuals/appled.mp3")
-                pygame.mixer.music.play()
+                sound_powerup.play()  # Play powerup sound effect
                 powerUps.pop(i)
                 explosion_system.create_explosion(v.x, v.y, (255, 0, 0))
 
