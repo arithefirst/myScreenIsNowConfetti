@@ -202,6 +202,7 @@ while running:
                 running = False
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 enemies = []
+                powerUps = []
                 explosion_system = ExplosionSystem()  # Reset explosion system
                 player = Player(WIDTH // 2, HEIGHT // 2)
                 movement = PlayerMovement(player)
