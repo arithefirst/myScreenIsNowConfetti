@@ -32,7 +32,7 @@ class BillieEilishBadGuy:
         self.screenSize = screenSize
         self.player = player
         self.targetPos = pygame.Vector2(
-            self.screenSize[0] // 2, self.screenSize[1] // 2
+            self.screenSize[0] // 2 + r.randint(-50,50), self.screenSize[1] // 2 + r.randint(-50,50)
         )
 
         startPos = get_starting_pos(screenSize[0], screenSize[1])
