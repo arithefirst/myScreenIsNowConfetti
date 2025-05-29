@@ -24,8 +24,13 @@ def font(size=72):
     return pygame.font.Font("Comic Sans MS.ttf", size)
 
 
+# Game states
+GAME_STATE_START = 0
+GAME_STATE_PLAYING = 1
+GAME_STATE_GAME_OVER = 2
+
+game_state = GAME_STATE_START
 invincible = False
-isLose = False
 score = 0
 
 enemies = []
@@ -54,6 +59,24 @@ class Player:
         surface.blit(self.image, self.rect)
 
 
+def reset_game():
+    global enemies, powerUps, explosion_system, player, movement, enemySpawnInterval
+    global tilNext, tilNextRamp, stage, score, invincible, nextPowerUp
+
+    enemies = []
+    powerUps = []
+    explosion_system = ExplosionSystem()
+    player = Player(WIDTH // 2, HEIGHT // 2)
+    movement = PlayerMovement(player)
+    invincible = False
+    enemySpawnInterval = defEnemySpawnInterval
+    tilNext = defEnemySpawnInterval
+    tilNextRamp = 60 * 10
+    stage = 0
+    score = 0
+    nextPowerUp = random.randint(300, 420)
+
+
 # Create player instance
 player = Player(WIDTH // 2, HEIGHT // 2)
 
@@ -75,7 +98,61 @@ explosion_system = ExplosionSystem()
 # Game loop
 running = True
 while running:
-    if not isLose:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.KEYDOWN:
+            if game_state == GAME_STATE_START and event.key == pygame.K_SPACE:
+                game_state = GAME_STATE_PLAYING
+                reset_game()
+            elif game_state == GAME_STATE_GAME_OVER and event.key == pygame.K_r:
+                game_state = GAME_STATE_PLAYING
+                reset_game()
+
+        # Handle movement events during gameplay
+        if game_state == GAME_STATE_PLAYING:
+            movement.handle_event(event)
+            konamiHandler.addKey(event)
+            if konamiHandler.checkCode():
+                invincible = True
+
+    if game_state == GAME_STATE_START:
+        # Start screen
+        screen.fill((50, 50, 100))  # Dark blue background
+
+        # Title
+        title = font(48).render("MY SCREEN IS NOW", False, (255, 255, 255))
+        confetti = font(64).render("CONFETTI!", False, (255, 255, 0))
+
+        # Subtitle
+        subtitle = font(24).render("Survive the chaos!", False, (200, 200, 200))
+
+        # Instructions
+        start_text = font(32).render("Press SPACE to start", False, (255, 255, 255))
+        controls1 = font(20).render(
+            "Use WASD or Arrow Keys to move", False, (150, 150, 150)
+        )
+        controls2 = font(20).render(
+            "Collect health power-ups to survive", False, (150, 150, 150)
+        )
+
+        # Position text
+        title_rect = title.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 80))
+        confetti_rect = confetti.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 40))
+        subtitle_rect = subtitle.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+        start_rect = start_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 50))
+        controls1_rect = controls1.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))
+        controls2_rect = controls2.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 125))
+
+        # Draw text
+        screen.blit(title, title_rect)
+        screen.blit(confetti, confetti_rect)
+        screen.blit(subtitle, subtitle_rect)
+        screen.blit(start_text, start_rect)
+        screen.blit(controls1, controls1_rect)
+        screen.blit(controls2, controls2_rect)
+
+    elif game_state == GAME_STATE_PLAYING:
         # Spawn a new enemy every 60 frames
         tilNext -= 1
         tilNextRamp -= 1
@@ -98,17 +175,6 @@ while running:
         else:
             nextPowerUp -= 1
 
-        # Handle events
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-            # Pass events to the movement handler
-            movement.handle_event(event)
-            konamiHandler.addKey(event)
-            if konamiHandler.checkCode():
-                invincible = True
-
         # Update player position
         movement.update()
 
@@ -124,7 +190,7 @@ while running:
                 player.health -= 1
                 score -= 25
                 if player.health == 0:
-                    isLose = True
+                    game_state = GAME_STATE_GAME_OVER
                     pygame.mixer.music.load("earVisuals/wompwompwompwomp.mp3")
                     pygame.mixer.music.play()
             if v.determineSelfDestruct():
@@ -202,37 +268,20 @@ while running:
         # Draw explosion particles
         explosion_system.draw(screen)
 
-    else:
-        # Handle only the quit event
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
-                enemies = []
-                powerUps = []
-                explosion_system = ExplosionSystem()  # Reset explosion system
-                player = Player(WIDTH // 2, HEIGHT // 2)
-                movement = PlayerMovement(player)
-                isLose = False
-                enemySpawnInterval = defEnemySpawnInterval
-                tilNext = defEnemySpawnInterval
-                tilNextRamp = 60 * 10
-                stage = 0
-                score = 0
-
-            screen.fill((255, 0, 0))
-            text = font().render("GAME OVER", False, (0, 0, 0))
-            restart = font(32).render('Press "r" to restart', False, (0, 0, 0))
-            scoreText = font(32).render(f"Score: {score}", False, (0, 0, 0))
-            scoreRect = scoreText.get_rect()
-            textRect = text.get_rect()
-            restartRect = restart.get_rect()
-            textRect.center = (WIDTH // 2, HEIGHT // 2)
-            restartRect.center = (WIDTH // 2, HEIGHT // 2 + 60)
-            scoreRect.center = (WIDTH // 2, HEIGHT // 2 - 60)
-            screen.blit(scoreText, scoreRect)
-            screen.blit(text, textRect)
-            screen.blit(restart, restartRect)
+    elif game_state == GAME_STATE_GAME_OVER:
+        screen.fill((255, 0, 0))
+        text = font().render("GAME OVER", False, (0, 0, 0))
+        restart = font(32).render('Press "r" to restart', False, (0, 0, 0))
+        scoreText = font(32).render(f"Score: {score}", False, (0, 0, 0))
+        scoreRect = scoreText.get_rect()
+        textRect = text.get_rect()
+        restartRect = restart.get_rect()
+        textRect.center = (WIDTH // 2, HEIGHT // 2)
+        restartRect.center = (WIDTH // 2, HEIGHT // 2 + 60)
+        scoreRect.center = (WIDTH // 2, HEIGHT // 2 - 60)
+        screen.blit(scoreText, scoreRect)
+        screen.blit(text, textRect)
+        screen.blit(restart, restartRect)
 
     pygame.display.flip()
 
