@@ -17,6 +17,7 @@ enemies = []
 enemySpawnInterval = 60
 tilNext = enemySpawnInterval
 
+
 # Create player
 class Player:
     def __init__(self, x, y):
@@ -51,8 +52,8 @@ while running:
         # Spawn a new enemy every 60 frames
         tilNext -= 1
         if tilNext == 0:
-            enemies.append(BillieEilishBadGuy((600, 400), player))   
-            tilNext = enemySpawnInterval    
+            enemies.append(BillieEilishBadGuy((600, 400), player))
+            tilNext = enemySpawnInterval
 
         # Handle events
         for event in pygame.event.get():
@@ -80,7 +81,6 @@ while running:
             player.rect.height // 2,
             min(HEIGHT - player.rect.height // 2, player.y),
         )
-
 
         # Draw and update
         screen.blit(bgImage, bgRect)

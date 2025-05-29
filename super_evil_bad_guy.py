@@ -31,8 +31,14 @@ class BillieEilishBadGuy:
         self.y = startPos[1]
 
     def checkCollision(self):
-        horizontalCollision = self.x > self.player.rect.x and self.x < self.player.rect.x + self.player.rect.width
-        verticalCollision = self.y > self.player.rect.y and self.y < self.player.rect.y + self.player.rect.height
+        horizontalCollision = (
+            self.x > self.player.rect.x
+            and self.x < self.player.rect.x + self.player.rect.width
+        )
+        verticalCollision = (
+            self.y > self.player.rect.y
+            and self.y < self.player.rect.y + self.player.rect.height
+        )
         return horizontalCollision and verticalCollision
 
     def update(self):
@@ -42,6 +48,6 @@ class BillieEilishBadGuy:
 
         self.x = delta[0]
         self.y = delta[1]
-        
+
     def draw(self, surface):
         pygame.draw.circle(surface, self.color, (self.x, self.y), self.radius)
