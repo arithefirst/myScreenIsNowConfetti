@@ -11,6 +11,8 @@ from powerup import PowerUp
 
 # Initialize pygame
 pygame.init()
+pygame.mixer.init()
+pygame.mixer.music.set_volume(0.7)
 
 # Set up the display
 WIDTH, HEIGHT = 600, 400
@@ -114,10 +116,11 @@ while running:
         for i, v in enumerate(enemies):
             v.update()
             if v.checkCollision() and not invincible:
-                # Create explosion at enemy position
-                explosion_system.create_explosion(v.x, v.y, v.color)
                 if len(enemies) > 0:
                     enemies.pop(i)
+                pygame.mixer.music.load("earVisuals/haoum.mp3")
+                pygame.mixer.music.play()
+                explosion_system.create_explosion(v.x, v.y, v.color)
                 player.health -= 1
                 score -= 25
                 if player.health == 0:
@@ -131,6 +134,8 @@ while running:
         for i, v in enumerate(powerUps):
             v.update()
             if v.toBeKilled == True and len(powerUps) > 0:
+                pygame.mixer.music.load("earVisuals/appled.mp3")
+                pygame.mixer.music.play()
                 powerUps.pop(i)
                 explosion_system.create_explosion(v.x, v.y, (255, 0, 0))
 
