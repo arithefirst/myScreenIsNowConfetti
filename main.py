@@ -22,10 +22,13 @@ pygame.mixer.music.play(-1)
 sound_hit = pygame.mixer.Sound("earVisuals/hurt.wav")
 sound_game_over = pygame.mixer.Sound("earVisuals/wompwompwompwomp.mp3")
 sound_powerup = pygame.mixer.Sound("earVisuals/powerUp.wav")
+sound_stagechange = pygame.mixer.Sound("earVisuals/stageChange.wav")
+
 
 sound_hit.set_volume(0.4)
 sound_game_over.set_volume(0.2)
 sound_powerup.set_volume(0.4)
+sound_stagechange.set_volume(0.4)
 
 # Set up the display
 WIDTH, HEIGHT = 600, 400
@@ -172,6 +175,7 @@ while running:
             tilNextRamp = 60 * 10
             if enemySpawnInterval > 0 and not stage == 5 and not stage == "ENDLESS":
                 enemySpawnInterval -= enemySpawnRampUp
+                sound_stagechange.play()
                 stage += 1
                 enemySpeed += 0.25
             elif stage == 5:
