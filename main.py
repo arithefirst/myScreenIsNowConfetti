@@ -32,6 +32,7 @@ enemySpawnInterval = defEnemySpawnInterval
 enemySpawnRampUp = 10
 tilNext = enemySpawnInterval
 tilNextRamp = 60 * 10
+enemySpeed = 7
 stage = 0
 
 
@@ -72,16 +73,17 @@ while running:
         tilNext -= 1
         tilNextRamp -= 1
         if tilNext == 0:
-            enemies.append(BillieEilishBadGuy((WIDTH, HEIGHT), player, 20, 7))
+            enemies.append(BillieEilishBadGuy((WIDTH, HEIGHT), player, 20, enemySpeed))
             tilNext = enemySpawnInterval
 
         if tilNextRamp == 0:
             tilNextRamp = 60 * 10
-            if enemySpawnInterval > 0:
+            if enemySpawnInterval > 0 and not stage == 5 and not stage == "ENDLESS":
                 enemySpawnInterval -= enemySpawnRampUp
                 stage += 1
-            elif enemySpawnInterval == 0:
-                isWin = True
+                enemySpeed += 0.25
+            elif stage == 5:
+                stage = "ENDLESS"
 
         # Handle events
         for event in pygame.event.get():
