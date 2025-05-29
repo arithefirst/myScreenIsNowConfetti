@@ -7,6 +7,7 @@ from particles import ExplosionSystem
 import random
 import math
 from powerup import PowerUp
+from background import BackgroundImages
 
 
 # Initialize pygame
@@ -49,7 +50,7 @@ enemies = []
 powerUps = []
 defEnemySpawnInterval = 60
 enemySpawnInterval = defEnemySpawnInterval
-enemySpawnRampUp = 10
+enemySpawnRampUp = 13
 tilNext = enemySpawnInterval
 tilNextRamp = 60 * 10
 enemySpeed = 7
@@ -71,23 +72,9 @@ class Player:
         surface.blit(self.image, self.rect)
 
 
-# Set the background image
-backgrounds = [
-    "blue_1",
-    "blue_2",
-    "blue_3",
-    "orange_1",
-    "orange_2",
-    "orange_3",
-]
-bgChoice = random.choice(backgrounds)
-bgImage = pygame.image.load(f"./images/backgrounds/{bgChoice}.png")
-bgRect = bgImage.get_rect(topleft=(0, 0))
-
-
 def reset_game():
     global enemies, powerUps, explosion_system, player, movement, enemySpawnInterval
-    global tilNext, tilNextRamp, stage, score, invincible, nextPowerUp, bgImage
+    global tilNext, tilNextRamp, stage, score, invincible, nextPowerUp
 
     enemies = []
     powerUps = []
@@ -101,22 +88,15 @@ def reset_game():
     stage = 0
     score = 0
     nextPowerUp = random.randint(300, 420)
-    bgChoice = random.choice(backgrounds)
-    bgImage = pygame.image.load(f"./images/backgrounds/{bgChoice}.png")
 
 
 # Create player instance
 player = Player(WIDTH // 2, HEIGHT // 2)
-
-# Initialize player movement
 movement = PlayerMovement(player)
-
-# Game clock
 clock = pygame.time.Clock()
 konamiHandler = KonamiCodeListener()
-
-# Create explosion system
 explosion_system = ExplosionSystem()
+bg = BackgroundImages(screen)
 
 # Game loop
 running = True
@@ -246,7 +226,7 @@ while running:
         )
 
         # Draw and update
-        screen.blit(bgImage, bgRect)
+        bg.draw(stage)
         player.draw(screen)
 
         # Stage
