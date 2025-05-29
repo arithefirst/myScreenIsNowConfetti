@@ -21,7 +21,8 @@ score = 0
 
 # Array for multiple enemy spawns
 enemies = []
-enemySpawnInterval = 60
+defEnemySpawnInterval = 60
+enemySpawnInterval = defEnemySpawnInterval
 enemySpawnRampUp = 10
 tilNext = enemySpawnInterval
 tilNextRamp = 60 * 10
@@ -35,7 +36,7 @@ class Player:
         self.y = y
         self.image = pygame.image.load("./images/player.png").convert_alpha()
         self.rect = self.image.get_rect(center=(self.x, self.y))
-        self.health = 100
+        self.health = 60
 
     def draw(self, surface):
         self.rect.center = (self.x, self.y)
@@ -87,7 +88,11 @@ while running:
         for i, v in enumerate(enemies):
             v.update()
             if v.checkCollision():
-                isLose = True
+                enemies.pop(i)
+                player.health -= 20
+                score -= 30
+                if player.health == 0:
+                    isLose = True
             if v.determineSelfDestruct():
                 enemies.pop(i)
                 score += 10
@@ -117,6 +122,12 @@ while running:
         scoreRect.top = 36
         screen.blit(scoreText, scoreRect)
 
+        # Health
+        healthText = font(24).render(f"Health: {player.health // 20}/3", False, (0,0,0))
+        healthRect = scoreText.get_rect()
+        healthRect.right = 600
+        screen.blit(healthText, healthRect)
+
         # Draw all enemies
         for i in enemies:
             i.draw(screen)
@@ -131,7 +142,8 @@ while running:
                 player = Player(WIDTH // 2, HEIGHT // 2)
                 movement = PlayerMovement(player)
                 isLose = False
-                tilNext = enemySpawnInterval
+                enemySpawnInterval = defEnemySpawnInterval
+                tilNext = defEnemySpawnInterval
                 tilNextRamp = 60 * 10
                 stage = 0
                 score = 0
