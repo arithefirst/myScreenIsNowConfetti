@@ -1,8 +1,14 @@
 {
   "cSpell.words": [
     "blit",
+    "centerx",
+    "centery",
+    "colliderect",
     "Eilish",
+    "healthsprite",
     "KEYUP",
-    "playermove"
+    "playermove",
+    "pwup",
+    "SRCALPHA"
   ]
 }

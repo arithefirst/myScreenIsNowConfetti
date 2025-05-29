@@ -4,7 +4,9 @@ from playermove import PlayerMovement
 from super_evil_bad_guy import BillieEilishBadGuy
 from konami import KonamiCodeListener
 from particles import ExplosionSystem
+import random
 import math
+from powerup import PowerUp
 
 
 # Initialize pygame
@@ -24,8 +26,8 @@ invincible = False
 isLose = False
 score = 0
 
-# Array for multiple enemy spawns
 enemies = []
+powerUps = []
 defEnemySpawnInterval = 60
 enemySpawnInterval = defEnemySpawnInterval
 enemySpawnRampUp = 10
@@ -33,6 +35,7 @@ tilNext = enemySpawnInterval
 tilNextRamp = 60 * 10
 enemySpeed = 7
 stage = 0
+nextPowerUp = random.randint(300, 420)
 
 
 # Create player
@@ -87,6 +90,12 @@ while running:
             elif stage == 5:
                 stage = "ENDLESS"
 
+        if nextPowerUp == 0:
+            powerUps.append(PowerUp((WIDTH, HEIGHT), player))
+            nextPowerUp = random.randint(300, 420)
+        else:
+            nextPowerUp -= 1
+
         # Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -117,6 +126,13 @@ while running:
                 if len(enemies) > 0:
                     enemies.pop(i)
                 score += 10
+
+        # Update power ups
+        for i, v in enumerate(powerUps):
+            v.update()
+            if v.toBeKilled == True and len(powerUps) > 0:
+                powerUps.pop(i)
+                explosion_system.create_explosion(v.x, v.y, (255, 0, 0))
 
         # Update explosion system
         explosion_system.update()
@@ -171,6 +187,9 @@ while running:
 
         # Draw all enemies
         for i in enemies:
+            i.draw(screen)
+
+        for i in powerUps:
             i.draw(screen)
 
         # Draw explosion particles
