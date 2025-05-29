@@ -117,13 +117,15 @@ while running:
         screen.blit(text, textRect)
 
         # Score
-        scoreText = font(24).render(f"Score: {score:04d}", False, (0,0,0))
+        scoreText = font(24).render(f"Score: {score:04d}", False, (0, 0, 0))
         scoreRect = scoreText.get_rect()
         scoreRect.top = 36
         screen.blit(scoreText, scoreRect)
 
         # Health
-        healthText = font(24).render(f"Health: {player.health // 20}/3", False, (0,0,0))
+        healthText = font(24).render(
+            f"Health: {player.health // 20}/3", False, (0, 0, 0)
+        )
         healthRect = scoreText.get_rect()
         healthRect.right = 600
         screen.blit(healthText, healthRect)
