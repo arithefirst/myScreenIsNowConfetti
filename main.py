@@ -200,6 +200,8 @@ while running:
                 explosion_system.create_explosion(v.x, v.y, v.color)
                 player.health -= 1
                 score -= 25
+                if score < 0:
+                    score = 0
                 if player.health == 0:
                     game_state = GAME_STATE_GAME_OVER
                     sound_game_over.play()  # Play game over sound
