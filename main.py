@@ -4,6 +4,7 @@ from playermove import PlayerMovement
 from super_evil_bad_guy import BillieEilishBadGuy
 from konami import KonamiCodeListener
 import math
+import endScreens
 
 
 # Initialize pygame
@@ -180,33 +181,9 @@ while running:
                 score = 0
 
         if isLose:
-            screen.fill((255, 0, 0))
-            text = font().render("GAME OVER", False, (0, 0, 0))
-            restart = font(32).render('Press "r" to restart', False, (0, 0, 0))
-            scoreText = font(32).render(f"Score: {score}", False, (0, 0, 0))
-            scoreRect = scoreText.get_rect()
-            textRect = text.get_rect()
-            restartRect = restart.get_rect()
-            textRect.center = (WIDTH // 2, HEIGHT // 2)
-            restartRect.center = (WIDTH // 2, HEIGHT // 2 + 60)
-            scoreRect.center = (WIDTH // 2, HEIGHT // 2 - 60)
-            screen.blit(scoreText, scoreRect)
-            screen.blit(text, textRect)
-            screen.blit(restart, restartRect)
+            endScreens.renderLoss(screen, font, score, WIDTH, HEIGHT)
         else:
-            screen.fill((166, 218, 136))
-            text = font().render("YOU WIN!", False, (0, 0, 0))
-            restart = font(32).render('Press "r" to restart', False, (0, 0, 0))
-            scoreText = font(32).render(f"Score: {score}", False, (0, 0, 0))
-            scoreRect = scoreText.get_rect()
-            textRect = text.get_rect()
-            restartRect = restart.get_rect()
-            textRect.center = (WIDTH // 2, HEIGHT // 2)
-            restartRect.center = (WIDTH // 2, HEIGHT // 2 + 60)
-            scoreRect.center = (WIDTH // 2, HEIGHT // 2 - 60)
-            screen.blit(scoreText, scoreRect)
-            screen.blit(text, textRect)
-            screen.blit(restart, restartRect)
+            endScreens.renderWin(screen, font, score, WIDTH, HEIGHT)
 
     pygame.display.flip()
 
