@@ -125,6 +125,8 @@ while running:
                 score -= 25
                 if player.health == 0:
                     isLose = True
+                    pygame.mixer.music.load("earVisuals/wompwompwompwomp.mp3")
+                    pygame.mixer.music.play()
             if v.determineSelfDestruct():
                 if len(enemies) > 0:
                     enemies.pop(i)
