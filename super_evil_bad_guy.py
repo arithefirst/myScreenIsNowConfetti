@@ -17,9 +17,8 @@ def get_starting_pos(width, height):
     elif side == "right":
         y = r.randint(0, height)
         x = width
-    else: 
+    else:
         y = r.randint(0, height)
-
 
     return (x, y)
 
@@ -38,15 +37,18 @@ class BillieEilishBadGuy:
         self.y = startPos[1]
 
     def checkCollision(self):
-        horizontalCollision = (
-            self.x > self.player.rect.x
-            and self.x < self.player.rect.x + self.player.rect.width
+        # Calculate distance between enemy center and player center
+        enemy_center = pygame.Vector2(self.x, self.y)
+        player_center = pygame.Vector2(
+            self.player.rect.centerx, self.player.rect.centery
         )
-        verticalCollision = (
-            self.y > self.player.rect.y
-            and self.y < self.player.rect.y + self.player.rect.height
+        distance = enemy_center.distance_to(player_center)
+
+        # Collision occurs when distance is less than enemy radius plus half player width/height
+        collision_distance = (
+            self.radius + min(self.player.rect.width, self.player.rect.height) // 2
         )
-        return horizontalCollision and verticalCollision
+        return distance < collision_distance
 
     def update(self):
         enemyPos = pygame.Vector2(self.x, self.y)

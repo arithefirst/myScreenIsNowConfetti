@@ -11,8 +11,10 @@ WIDTH, HEIGHT = 600, 400
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("MY SCREEN IS NOW CONFETTI!!!!")
 
-def font(size = 72):
-    return pygame.font.Font('Comic Sans MS.ttf', size)
+
+def font(size=72):
+    return pygame.font.Font("Comic Sans MS.ttf", size)
+
 
 isLose = False
 
@@ -23,6 +25,7 @@ enemySpawnRampUp = 10
 tilNext = enemySpawnInterval
 tilNextRamp = 60 * 10
 stage = 0
+
 
 # Create player
 class Player:
@@ -35,6 +38,7 @@ class Player:
     def draw(self, surface):
         self.rect.center = (self.x, self.y)
         surface.blit(self.image, self.rect)
+
 
 # Create player instance
 player = Player(WIDTH // 2, HEIGHT // 2)
@@ -59,13 +63,12 @@ while running:
         if tilNext == 0:
             enemies.append(BillieEilishBadGuy((WIDTH, HEIGHT), player, 20, 7))
             tilNext = enemySpawnInterval
-        
+
         if tilNextRamp == 0:
             tilNextRamp = 60 * 10
             if enemySpawnInterval > 0:
                 enemySpawnInterval -= enemySpawnRampUp
                 stage += 1
-
 
         # Handle events
         for event in pygame.event.get():
@@ -97,7 +100,7 @@ while running:
         # Draw and update
         screen.blit(bgImage, bgRect)
         player.draw(screen)
-        text = font(32).render(f'Stage {stage}', False, (0,0,0))
+        text = font(32).render(f"Stage {stage}", False, (0, 0, 0))
         textRect = text.get_rect()
         screen.blit(text, textRect)
 
@@ -120,8 +123,8 @@ while running:
                 stage = 0
 
         screen.fill((0, 0, 0))
-        text = font().render('GAME OVER', False, (255,0,0))
-        restart = font(32).render('Press "r" to restart', False, (255,0,0))
+        text = font().render("GAME OVER", False, (255, 0, 0))
+        restart = font(32).render('Press "r" to restart', False, (255, 0, 0))
         textRect = text.get_rect()
         restartRect = restart.get_rect()
         textRect.center = (WIDTH // 2, HEIGHT // 2)
