@@ -9,10 +9,17 @@ def get_starting_pos(width, height):
     x = 0
     y = 0
 
-    if side == "top" or side == "bottom":
+    if side == "top":
         x = r.randint(0, width)
-    else:
+    elif side == "bottom":
+        x = r.randint(0, width)
+        y = height
+    elif side == "right":
         y = r.randint(0, height)
+        x = width
+    else: 
+        y = r.randint(0, height)
+
 
     return (x, y)
 
