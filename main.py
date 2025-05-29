@@ -82,10 +82,12 @@ while running:
         movement.update()
 
         # Update all enemies
-        for i in enemies:
-            i.update()
-            if i.checkCollision():
+        for i, v in enumerate(enemies):
+            v.update()
+            if v.checkCollision():
                 isLose = True
+            if v.determineSelfDestruct():
+                enemies.pop(i)
 
         # Keep player within screen bounds
         player.x = max(
