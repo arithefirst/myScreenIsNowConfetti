@@ -27,7 +27,7 @@ def get_starting_pos(width, height):
 class BillieEilishBadGuy:
     def __init__(self, screenSize, player, radius=20, speed=5):
         self.speed = speed
-        self.color = (r.randint(0, 255), r.randint(0, 255), r.randint(0, 255))
+        self.color = (0, 0, r.randint(200, 255))
         self.radius = radius
         self.screenSize = screenSize
         self.player = player

@@ -71,9 +71,23 @@ class Player:
         surface.blit(self.image, self.rect)
 
 
+# Set the background image
+backgrounds = [
+    "blue_1",
+    "blue_2",
+    "blue_3",
+    "orange_1",
+    "orange_2",
+    "orange_3",
+]
+bgChoice = random.choice(backgrounds)
+bgImage = pygame.image.load(f"./images/backgrounds/{bgChoice}.png")
+bgRect = bgImage.get_rect(topleft=(0, 0))
+
+
 def reset_game():
     global enemies, powerUps, explosion_system, player, movement, enemySpawnInterval
-    global tilNext, tilNextRamp, stage, score, invincible, nextPowerUp
+    global tilNext, tilNextRamp, stage, score, invincible, nextPowerUp, bgImage
 
     enemies = []
     powerUps = []
@@ -87,6 +101,8 @@ def reset_game():
     stage = 0
     score = 0
     nextPowerUp = random.randint(300, 420)
+    bgChoice = random.choice(backgrounds)
+    bgImage = pygame.image.load(f"./images/backgrounds/{bgChoice}.png")
 
 
 # Create player instance
@@ -97,11 +113,6 @@ movement = PlayerMovement(player)
 
 # Game clock
 clock = pygame.time.Clock()
-
-# Set the background image
-bgImage = pygame.image.load("./images/bg_texture.png")
-bgRect = bgImage.get_rect(topleft=(0, 0))
-
 konamiHandler = KonamiCodeListener()
 
 # Create explosion system
