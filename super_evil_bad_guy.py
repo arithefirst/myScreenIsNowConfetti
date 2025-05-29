@@ -18,16 +18,22 @@ def get_starting_pos(width, height):
 
 
 class BillieEilishBadGuy:
-    def __init__(self, screenSize, radius=20, speed=5):
+    def __init__(self, screenSize, player, radius=20, speed=5):
         self.speed = speed
         self.color = (r.randint(0, 255), r.randint(0, 255), r.randint(0, 255))
         self.radius = radius
         self.screenSize = screenSize
+        self.player = player
 
         startPos = get_starting_pos(screenSize[0], screenSize[1])
 
         self.x = startPos[0]
         self.y = startPos[1]
+
+    def checkCollision(self):
+        horizontalCollision = self.x > self.player.rect.x and self.x < self.player.rect.x + self.player.rect.width
+        verticalCollision = self.y > self.player.rect.y and self.y < self.player.rect.y + self.player.rect.height
+        return horizontalCollision and verticalCollision
 
     def update(self):
         enemyPos = pygame.Vector2(self.x, self.y)

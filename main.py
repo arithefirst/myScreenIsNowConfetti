@@ -10,6 +10,7 @@ pygame.init()
 WIDTH, HEIGHT = 600, 400
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("MY SCREEN IS NOW CONFETTI!!!!")
+isLose = False
 
 # Array for multiple enemy spawns
 enemies = []
@@ -46,47 +47,56 @@ bgRect = bgImage.get_rect(topleft=(0, 0))
 # Game loop
 running = True
 while running:
-    # Spawn a new enemy every 60 frames
-    tilNext -= 1
-    if tilNext == 0:
-        enemies.append(BillieEilishBadGuy((600, 400)))   
-        tilNext = enemySpawnInterval    
+    if not isLose:
+        # Spawn a new enemy every 60 frames
+        tilNext -= 1
+        if tilNext == 0:
+            enemies.append(BillieEilishBadGuy((600, 400), player))   
+            tilNext = enemySpawnInterval    
 
-    # Handle events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+        # Handle events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-        # Pass events to the movement handler
-        movement.handle_event(event)
+            # Pass events to the movement handler
+            movement.handle_event(event)
 
-    # Update player position
-    movement.update()
+        # Update player position
+        movement.update()
 
-    # Update all enemies
-    for i in enemies:
-        i.update()
+        # Update all enemies
+        for i in enemies:
+            i.update()
+            if i.checkCollision():
+                isLose = True
 
-    
-
-    # Keep player within screen bounds
-    player.x = max(
-        player.rect.width // 2,
-        min(WIDTH - player.rect.width // 2, player.x),
-    )
-    player.y = max(
-        player.rect.height // 2,
-        min(HEIGHT - player.rect.height // 2, player.y),
-    )
+        # Keep player within screen bounds
+        player.x = max(
+            player.rect.width // 2,
+            min(WIDTH - player.rect.width // 2, player.x),
+        )
+        player.y = max(
+            player.rect.height // 2,
+            min(HEIGHT - player.rect.height // 2, player.y),
+        )
 
 
-    # Draw and update
-    screen.blit(bgImage, bgRect)
-    player.draw(screen)
+        # Draw and update
+        screen.blit(bgImage, bgRect)
+        player.draw(screen)
 
-    # Draw all enemies
-    for i in enemies:
-        i.draw(screen)
+        # Draw all enemies
+        for i in enemies:
+            i.draw(screen)
+
+    else:
+        # Handle only the quit event
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        screen.fill((255, 0, 0))
     pygame.display.flip()
 
     # Cap the frame rate
