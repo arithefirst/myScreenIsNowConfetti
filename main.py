@@ -3,6 +3,7 @@ import sys
 from playermove import PlayerMovement
 from super_evil_bad_guy import BillieEilishBadGuy
 from konami import KonamiCodeListener
+from particles import ExplosionSystem
 import math
 
 
@@ -41,7 +42,7 @@ class Player:
         self.y = y
         self.image = pygame.image.load("./images/player.png").convert_alpha()
         self.rect = self.image.get_rect(center=(self.x, self.y))
-        self.health = 60
+        self.health = 3
 
     def draw(self, surface):
         self.rect.center = (self.x, self.y)
@@ -62,6 +63,9 @@ bgImage = pygame.image.load("./images/bg_texture.png")
 bgRect = bgImage.get_rect(topleft=(0, 0))
 
 konamiHandler = KonamiCodeListener()
+
+# Create explosion system
+explosion_system = ExplosionSystem()
 
 # Game loop
 running = True
@@ -101,14 +105,21 @@ while running:
         for i, v in enumerate(enemies):
             v.update()
             if v.checkCollision() and not invincible:
-                enemies.pop(i)
-                player.health -= 20
-                score -= 30
+                # Create explosion at enemy position
+                explosion_system.create_explosion(v.x, v.y, v.color)
+                if len(enemies) > 0:
+                    enemies.pop(i)
+                player.health -= 1
+                score -= 25
                 if player.health == 0:
                     isLose = True
             if v.determineSelfDestruct():
-                enemies.pop(i)
+                if len(enemies) > 0:
+                    enemies.pop(i)
                 score += 10
+
+        # Update explosion system
+        explosion_system.update()
 
         # Keep player within screen bounds
         player.x = max(
@@ -153,9 +164,7 @@ while running:
 
         # Health
         if not invincible:
-            healthText = font(24).render(
-                f"Health: {player.health // 20}/3", False, (0, 0, 0)
-            )
+            healthText = font(24).render(f"Health: {player.health}/3", False, (0, 0, 0))
             healthRect = scoreText.get_rect()
             healthRect.right = 600
             screen.blit(healthText, healthRect)
@@ -164,6 +173,9 @@ while running:
         for i in enemies:
             i.draw(screen)
 
+        # Draw explosion particles
+        explosion_system.draw(screen)
+
     else:
         # Handle only the quit event
         for event in pygame.event.get():
@@ -171,6 +183,7 @@ while running:
                 running = False
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 enemies = []
+                explosion_system = ExplosionSystem()  # Reset explosion system
                 player = Player(WIDTH // 2, HEIGHT // 2)
                 movement = PlayerMovement(player)
                 isLose = False
