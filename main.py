@@ -18,9 +18,11 @@ isLose = False
 
 # Array for multiple enemy spawns
 enemies = []
-enemySpawnInterval = 10
+enemySpawnInterval = 60
+enemySpawnRampUp = 10
 tilNext = enemySpawnInterval
-
+tilNextRamp = 60 * 10
+stage = 0
 
 # Create player
 class Player:
@@ -34,13 +36,11 @@ class Player:
         self.rect.center = (self.x, self.y)
         surface.blit(self.image, self.rect)
 
-
 # Create player instance
 player = Player(WIDTH // 2, HEIGHT // 2)
 
 # Initialize player movement
 movement = PlayerMovement(player)
-
 
 # Game clock
 clock = pygame.time.Clock()
@@ -55,9 +55,17 @@ while running:
     if not isLose:
         # Spawn a new enemy every 60 frames
         tilNext -= 1
+        tilNextRamp -= 1
         if tilNext == 0:
-            enemies.append(BillieEilishBadGuy((600, 400), player))
+            enemies.append(BillieEilishBadGuy((WIDTH, HEIGHT), player, 20, 7))
             tilNext = enemySpawnInterval
+        
+        if tilNextRamp == 0:
+            tilNextRamp = 60 * 10
+            if enemySpawnInterval > 0:
+                enemySpawnInterval -= enemySpawnRampUp
+                stage += 1
+
 
         # Handle events
         for event in pygame.event.get():
@@ -89,6 +97,9 @@ while running:
         # Draw and update
         screen.blit(bgImage, bgRect)
         player.draw(screen)
+        text = font(32).render(f'Stage {stage}', False, (0,0,0))
+        textRect = text.get_rect()
+        screen.blit(text, textRect)
 
         # Draw all enemies
         for i in enemies:
@@ -104,6 +115,9 @@ while running:
                 player = Player(WIDTH // 2, HEIGHT // 2)
                 movement = PlayerMovement(player)
                 isLose = False
+                tilNext = enemySpawnInterval
+                tilNextRamp = 60 * 10
+                stage = 0
 
         screen.fill((0, 0, 0))
         text = font().render('GAME OVER', False, (255,0,0))
