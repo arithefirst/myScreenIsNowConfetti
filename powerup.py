@@ -5,7 +5,7 @@ import pygame
 class PowerUp:
     def __init__(self, size, player, explosion_system, set_slow):
 
-        powerUpTypes = ["health", "time", "health"]
+        powerUpTypes = ["health", "time"]
         self.type = random.choice(powerUpTypes)
 
         images = {
@@ -37,7 +37,7 @@ class PowerUp:
                 self.player.health += 1
                 self.toBeKilled = True
                 self.explosion_system.create_explosion(self.x, self.y, (255, 0, 0))
-            else:
+            elif self.type == "time":
                 if self.set_slow() != False:
                     self.toBeKilled = True
                     self.explosion_system.create_explosion(
