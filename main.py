@@ -53,7 +53,7 @@ enemies = []
 powerUps = []
 defEnemySpawnInterval = 60
 enemySpawnInterval = defEnemySpawnInterval
-enemySpawnRampUp = 13
+enemySpawnRampUp = 10
 tilNext = enemySpawnInterval
 tilNextRamp = 60 * 10
 enemySpeed = 7
@@ -179,6 +179,7 @@ while running:
                 stage += 1
                 enemySpeed += 0.25
             elif stage == 5:
+                sound_stagechange.play()
                 stage = "ENDLESS"
 
         if nextPowerUp == 0:
