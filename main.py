@@ -9,7 +9,6 @@ import math
 from powerup import PowerUp
 from background import BackgroundImages
 
-
 # Initialize pygame
 pygame.init()
 pygame.mixer.init()
@@ -49,6 +48,7 @@ game_state = GAME_STATE_START
 invincible = False
 score = 0
 
+
 enemies = []
 powerUps = []
 defEnemySpawnInterval = 60
@@ -58,7 +58,21 @@ tilNext = enemySpawnInterval
 tilNextRamp = 60 * 10
 enemySpeed = 7
 stage = 0
-nextPowerUp = random.randint(300, 420)
+nextPowerUp = random.randint(240, 300)
+slow_motion_active = False
+slow_motion_timer = 0
+original_enemy_speed = enemySpeed
+
+
+def activate_slow_motion():
+    global slow_motion_active, slow_motion_timer, enemySpeed, original_enemy_speed
+    if not slow_motion_active:
+        original_enemy_speed = enemySpeed
+        enemySpeed = enemySpeed / 2
+        slow_motion_active = True
+        slow_motion_timer = 4.5 * 60
+    else:
+        return False
 
 
 # Create player
@@ -183,10 +197,18 @@ while running:
                 stage = "ENDLESS"
 
         if nextPowerUp == 0:
-            powerUps.append(PowerUp((WIDTH, HEIGHT), player))
+            powerUps.append(
+                PowerUp((WIDTH, HEIGHT), player, explosion_system, activate_slow_motion)
+            )
             nextPowerUp = random.randint(300, 420)
         else:
             nextPowerUp -= 1
+
+        if slow_motion_active:
+            slow_motion_timer -= 1
+            if slow_motion_timer <= 0:
+                slow_motion_active = False
+                enemySpeed = original_enemy_speed
 
         # Update player position
         movement.update()
@@ -217,7 +239,6 @@ while running:
             if v.toBeKilled == True and len(powerUps) > 0:
                 sound_powerup.play()  # Play powerup sound effect
                 powerUps.pop(i)
-                explosion_system.create_explosion(v.x, v.y, (255, 0, 0))
 
         # Update explosion system
         explosion_system.update()
@@ -281,7 +302,7 @@ while running:
         explosion_system.draw(screen)
 
     elif game_state == GAME_STATE_GAME_OVER:
-        screen.fill((255, 0, 0))
+        screen.fill((247, 147, 140))
         text = font().render("GAME OVER", False, (0, 0, 0))
         restart = font(32).render('Press "r" to restart', False, (0, 0, 0))
         scoreText = font(32).render(f"Score: {score}", False, (0, 0, 0))
