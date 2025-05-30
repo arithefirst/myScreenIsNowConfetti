@@ -5,7 +5,7 @@ import pygame
 class PowerUp:
     def __init__(self, size, player, explosion_system, set_slow):
 
-        powerUpTypes = ["health", "time"]
+        powerUpTypes = ["health", "health", "time"]
         self.type = random.choice(powerUpTypes)
 
         images = {
