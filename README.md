@@ -8,7 +8,7 @@ Survive waves of enemies that spawn from the edges of the screen and move toward
 
 ### Features
 - **Dynamic Difficulty**: Enemies spawn faster and move quicker as you progress through stages
-- **Power-ups**: Health restoration items spawn randomly to help you survive
+- **Power-ups**: Health restoration items and time slow effects spawn randomly to help you survive
 - **Particle Effects**: Explosion effects when enemies are destroyed or power-ups are collected
 - **Stage Progression**: Multiple background themes that change as you advance
 - **Score System**: Earn points for surviving and lose points for taking damage
@@ -40,7 +40,7 @@ Survive waves of enemies that spawn from the edges of the screen and move toward
 
 ## 🎵 Audio Credits
 
-Background music: "Strawberry Cake" by nobonoko
+Background music: ["Strawberry Cake" by nobonoko](https://www.youtube.com/watch?v=S_kxr-erXB8&pp=ygUdIlN0cmF3YmVycnkgQ2FrZSIgYnkgbm9ib25va28%3D)
 
 
 ## 🎯 Game Mechanics
@@ -50,6 +50,13 @@ Background music: "Strawberry Cake" by nobonoko
 - Lose 1 health when touching an enemy
 - Collect health power-ups to restore health (max 3)
 - Game ends when health reaches 0
+
+### Power-up System
+- **Health Power-up** (Red Heart): Restores 1 health point (up to maximum of 3)
+- **Time Slow Power-up** (Hourglass): Slows down all enemy movement by 50% for 4.5 seconds
+- Power-ups spawn randomly every 5-7 seconds
+- Health power-ups only work if you're below maximum health
+- Time slow effect doesn't stack - collecting another while active has no effect
 
 ### Scoring
 - +10 points for each enemy that self-destructs
